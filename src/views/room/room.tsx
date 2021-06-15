@@ -7,7 +7,7 @@ export default function Room(props : {room: string}){
     return (
         <div>
             <NavBar/>
-            <Container maxWidth="xl">
+            <Container maxWidth="lg">
                 <Player/>
             </Container>
         </div>

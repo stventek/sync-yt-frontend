@@ -11,7 +11,7 @@ import {useState} from 'react';
 const useStyles = makeStyles((theme) => {
     return {
         controls: {
-            marginTop: theme.spacing(5)
+           
         }
     }
 });
