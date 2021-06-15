@@ -57,6 +57,7 @@ export default function NavBar() {
 
   return (
     <div>
+      <Toolbar/>
       <AppBar position="fixed">
         <Toolbar>
           <Typography className={classes.title} variant="h6" noWrap>
