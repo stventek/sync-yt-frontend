@@ -3,6 +3,8 @@ import CardContent from '@material-ui/core/CardContent';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import socket from '../../utilities/socket';
+import {withRouter} from 'react-router-dom';
 
 const useStyles = makeStyles(theme => {
     return {
@@ -12,8 +14,17 @@ const useStyles = makeStyles(theme => {
     }
 });
 
-export default function CreateCard(){
+function CreateCard(props: any){
     const classes = useStyles();
+
+    const handleSubmit = (e : any) => {
+        e.preventDefault();
+        socket.emit('create-room', (room: number) => {
+            console.log(room);
+            props.history.push(`/room/${room}`);
+        })
+    }
+
     return (
         <div>
             <Card>
@@ -21,7 +32,7 @@ export default function CreateCard(){
                     <Typography gutterBottom variant="h5" component="h2">
                         Create a room
                     </Typography>
-                    <form action="">
+                    <form action="" onSubmit={handleSubmit}>
                         <Button variant="contained" color="primary" fullWidth className={classes.formItems} type="submit">
                             Create
                         </Button>
@@ -30,3 +41,5 @@ export default function CreateCard(){
             </Card>
         </div>)
 }
+
+export default withRouter(CreateCard);

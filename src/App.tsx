@@ -2,6 +2,7 @@ import CssBaseline from '@material-ui/core/CssBaseline';
 import Home from './views/home/home';
 import Room from './views/room/room';
 import {Route, Switch, BrowserRouter as Router} from 'react-router-dom';
+import './utilities/socket';
 
 function App() {
   return (
