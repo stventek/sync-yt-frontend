@@ -20,7 +20,6 @@ function CreateCard(props: any){
     const handleSubmit = (e : any) => {
         e.preventDefault();
         socket.emit('create-room', (room: number) => {
-            console.log(room);
             props.history.push(`/room/${room}`);
         })
     }
