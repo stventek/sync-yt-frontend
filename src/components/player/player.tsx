@@ -1,6 +1,10 @@
 import PlayerControls from "./player-controls";
-import ReactPlayer from 'react-player';
+import YouTubePlayer from "youtube-player";
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import {useEffect} from 'react';
+import socket from '../../utilities/socket';
+import { useState } from "react";
+import { getDuration } from "../../utilities/player-fix";
 
 const useStyles = makeStyles(theme => ({
     playerWrapper: {
@@ -15,19 +19,31 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function Player(){
+export default function Player(props: {room: string}){
     const classes = useStyles();
+
+    const [player, setPlayer] = useState<null | any>(null);
+    const [playerMeta, setPlayerMeta] = useState({start: 0, end: 0});
+
+    useEffect(() => {
+        //type declaration files are wrong
+        const player: any = YouTubePlayer('youtube-player', {height:'100%', width:'100%'});
+        setPlayer(player);
+
+        socket.on('play-recive', (videoId: string) => {
+            player.loadVideoById(videoId);
+            getDuration(player, false).then(end => {
+                setPlayerMeta({...playerMeta, start: 0, end})
+            })
+        });
+    }, []);
+
     return (
         <div>
             <div className={classes.playerWrapper}>
-                <ReactPlayer
-                className={classes.reactPlayer}
-                url='https://www.youtube.com/watch?v=ysz5S6PUM-U'
-                width='100%'
-                height='100%'
-                />
+                <div id="youtube-player" className={classes.reactPlayer}/>
             </div>
-            <PlayerControls start={1000 * 45} end={1000 * 60 * 60}/>
+            {player ? <PlayerControls room={props.room} player={player} start={playerMeta.start} end={playerMeta.end}/> : null}
         </div>
     )
 }
