@@ -1,6 +1,5 @@
 import Paper from '@material-ui/core/Paper';
 import Slider from '@material-ui/core/Slider';
-import msToTime from '../../utilities/ms-to-time';
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
@@ -8,6 +7,9 @@ import PauseIcon from '@material-ui/icons/Pause';
 import socket from '../../utilities/socket';
 import { useState } from 'react';
 import { useEffect } from 'react';
+import makeStyles from '@material-ui/core/styles/makeStyles';
+import Typography from '@material-ui/core/Typography';
+import msToTime from '../../utilities/ms-to-time';
 
 function ValueLabelComponent(props: any) {
     const { children, open, value } = props;
@@ -26,15 +28,30 @@ type controlsProps = {
     pause: boolean
 }
 
+const useStyles = makeStyles(theme => ({
+    controllsContainer: {
+        padding: theme.spacing(0,1),
+    },
+    playButton: {
+        padding: theme.spacing(1.5),
+    },
+    vidBar: {
+        padding: 0
+    }
+}));
+
+
 export default function PlayerControls(props: controlsProps){
 
-    const [time, setTime] = useState(0);
+    const [state, setState] = useState({time: 0, timeDisplay: ""});
+    const classes = useStyles();
 
     //takes player current time and sync it with the slider
     useEffect(() => {
         const interval = setInterval(() => {
             props.player.getCurrentTime().then((time : any) => {
-                setTime(time * 1000);
+                const millisec = time * 1000;
+                setState({...state, time: millisec, timeDisplay: msToTime(millisec)});
             })
         }, 1000);
         return () => {
@@ -55,11 +72,12 @@ export default function PlayerControls(props: controlsProps){
 
     return (
         <div>
-            <Paper>
-                <Slider style={{margin: 0}} value={time} onChangeCommitted={handleSeekTo} color="secondary" ValueLabelComponent={ValueLabelComponent} min={0} max={props.end} valueLabelDisplay="auto" valueLabelFormat={x => msToTime(x)}/>
-                <IconButton onClick={handleToggle}>
+            <Paper className={classes.controllsContainer}>
+                <Slider className={classes.vidBar} value={state.time} onChangeCommitted={handleSeekTo} color="secondary" ValueLabelComponent={ValueLabelComponent} min={0} max={props.end} valueLabelDisplay="auto" valueLabelFormat={x => msToTime(x)}/>
+                <IconButton className={classes.playButton} onClick={handleToggle}>
                     {props.pause ? <PlayArrowIcon/> : <PauseIcon/>}
                 </IconButton>
+                <Typography variant="body2" component="span">{state.timeDisplay} / {msToTime(props.end)}</Typography>
             </Paper>
         </div>
     )
