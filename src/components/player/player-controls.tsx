@@ -5,9 +5,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
-import {useState} from 'react';
-import { useEffect } from 'react';
 import socket from '../../utilities/socket';
+import { useState } from 'react';
+import { useEffect } from 'react';
 
 function ValueLabelComponent(props: any) {
     const { children, open, value } = props;
@@ -23,40 +23,39 @@ type controlsProps = {
     start: number,
     end: number,
     player: any,
-    room: string
+    room: string,
+    pause: boolean
 }
 
 export default function PlayerControls(props: controlsProps){
-    const [state, setState] = useState({pause: true});
+
+    const [time, setTime] = useState(0);
 
     useEffect(() => {
-        props.player.on('stateChange', (event: any) => {
-            const pause = event.data === 2 ? true : false;
-            setState({pause: pause});
-        });
-
-        socket.on('pause-recive', () => {
-            props.player.pauseVideo();
-        })
-
-        socket.on('resume-recive', () => {
-            props.player.playVideo();
-        })
-    },[]);
+        setInterval(() => {
+            props.player.getCurrentTime().then((time : any) => {
+                setTime(time * 1000);
+            })
+        }, 1000);
+    },[])
 
     const handleToggle = (e: any) => {
-        if(state.pause)
+        if(props.pause)
             socket.emit('resume', props.room);
         else
             socket.emit('pause', props.room);
     };
-    
+
+    const handleSeekTo = (e: any, value: number | number[]) => {
+        socket.emit('seekTo', props.room, value);
+    }
+
     return (
         <div>
             <Paper>
-                <Slider style={{margin: 0}} defaultValue={props.start} color="secondary" ValueLabelComponent={ValueLabelComponent} min={props.start * 1000} max={props.end * 1000} valueLabelDisplay="auto" valueLabelFormat={x => msToTime(x)}/>
+                <Slider style={{margin: 0}} value={time} onChangeCommitted={handleSeekTo} color="secondary" ValueLabelComponent={ValueLabelComponent} min={0} max={props.end} valueLabelDisplay="auto" valueLabelFormat={x => msToTime(x)}/>
                 <IconButton onClick={handleToggle}>
-                    {state.pause ? <PlayArrowIcon/> : <PauseIcon/>}
+                    {props.pause ? <PlayArrowIcon/> : <PauseIcon/>}
                 </IconButton>
             </Paper>
         </div>
