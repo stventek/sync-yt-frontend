@@ -20,7 +20,6 @@ function ValueLabelComponent(props: any) {
   }
 
 type controlsProps = {
-    start: number,
     end: number,
     player: any,
     room: string,
@@ -31,12 +30,16 @@ export default function PlayerControls(props: controlsProps){
 
     const [time, setTime] = useState(0);
 
+    //takes player current time and sync it with the slider
     useEffect(() => {
-        setInterval(() => {
+        const interval = setInterval(() => {
             props.player.getCurrentTime().then((time : any) => {
                 setTime(time * 1000);
             })
         }, 1000);
+        return () => {
+            clearInterval(interval);
+        };
     },[])
 
     const handleToggle = (e: any) => {

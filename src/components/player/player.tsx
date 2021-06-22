@@ -27,7 +27,7 @@ export default function Player(props: {room: string}){
     const [playerMeta, setPlayerMeta] = useState<PlayerMeta>({start: 0, end: 0, pause: true});
 
     useEffect(() => {
-        //type declaration files are wrong
+        //type declaration files are wrong, thus the type of any
         const player: any = YouTubePlayer('youtube-player', {height:'100%', width:'100%'});
         setPlayer(player);
 
@@ -74,6 +74,14 @@ export default function Player(props: {room: string}){
                 return player;
             })
         })
+
+        return () => {
+            socket.off('play-recive');
+            socket.off('update');
+            socket.off('pause-recive');
+            socket.off('resume-recive');
+            socket.off('seekTo-recive');
+        }
     }, []);
 
     return (
@@ -81,7 +89,7 @@ export default function Player(props: {room: string}){
             <div className={classes.playerWrapper}>
                 <div id="youtube-player" className={classes.reactPlayer}/>
             </div>
-            {player ? <PlayerControls pause={playerMeta.pause} room={props.room} player={player} start={playerMeta.start} end={playerMeta.end}/> : null}
+            {player ? <PlayerControls pause={playerMeta.pause} room={props.room} player={player} end={playerMeta.end}/> : null}
         </div>
     )
 }
