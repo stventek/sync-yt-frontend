@@ -4,6 +4,8 @@ import Typography from '@material-ui/core/Typography';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import makeStyles from '@material-ui/core/styles/makeStyles';
+import { withRouter } from 'react-router';
+import { useState } from 'react';
 
 const useStyles = makeStyles(theme => {
     return {
@@ -13,8 +15,23 @@ const useStyles = makeStyles(theme => {
     }
 })
 
-export default function JoinCard(){
+function JoinCard(props: any){
     const classes = useStyles();
+
+    const [state, setState] = useState({room: ''});
+
+    const handleSubmit = (e : any) => {
+        e.preventDefault();
+        props.history.push(`/room/${state.room}`);
+    }
+
+    const handleInputChange = (event : any) => {
+        setState({
+          ...state,
+          [event.target.name]: event.target.value
+        });
+    };
+
     return (
         <div>
             <Card>
@@ -22,8 +39,8 @@ export default function JoinCard(){
                     <Typography gutterBottom variant="h5" component="h2">
                         Join a room
                     </Typography>
-                    <form action="">
-                        <TextField id="outlined-basic" label="Code" variant="outlined" size="small" fullWidth className={classes.formItems} />
+                    <form action="" onSubmit={handleSubmit}>
+                        <TextField name="room" id="outlined-basic" label="Code" variant="outlined" size="small" fullWidth className={classes.formItems} onChange={handleInputChange}/>
                         <Button variant="contained" color="primary" fullWidth className={classes.formItems} type="submit">
                             Join
                         </Button>
@@ -33,3 +50,5 @@ export default function JoinCard(){
 
         </div>)
 }
+
+export default withRouter(JoinCard);

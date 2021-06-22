@@ -43,8 +43,6 @@ export default function Player(props: {room: string}){
         socket.on('update', ( playerInfo : {videoId: string, timeElapsed: number, pause: boolean}) => {
             setPlayer((player: any) => {
                 player.loadVideoById(playerInfo.videoId);
-                if(playerInfo.pause)
-                    player.pauseVideo();
                 seekTo(player, playerInfo.timeElapsed);
                 getDuration(player, playerInfo.pause).then(end => {
                     setPlayerMeta(state => ({...state, start: playerInfo.timeElapsed, end, pause: playerInfo.pause}));
