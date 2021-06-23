@@ -30,13 +30,13 @@ type controlsProps = {
 
 const useStyles = makeStyles(theme => ({
     controllsContainer: {
-        padding: theme.spacing(0,1),
+        padding: theme.spacing(1,1),
     },
     playButton: {
-        padding: theme.spacing(1.5),
+        padding: theme.spacing(1),
     },
     vidBar: {
-        padding: 0
+        padding: theme.spacing(1, 0)
     }
 }));
 
@@ -53,7 +53,7 @@ export default function PlayerControls(props: controlsProps){
                 const millisec = time * 1000;
                 setState({...state, time: millisec, timeDisplay: msToTime(millisec)});
             })
-        }, 1000);
+        }, 100);
         return () => {
             clearInterval(interval);
         };

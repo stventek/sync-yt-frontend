@@ -3,20 +3,24 @@ import Player from '../../components/player/player';
 import Container from '@material-ui/core/Container';
 import socket from '../../utilities/socket';
 import { useEffect } from 'react';
-import { withRouter } from 'react-router';
 import AlertDialog from './dialog';
 import React from 'react';
+import { RouteComponentProps } from 'react-router-dom';
 
-function Room(props : any){
+export default function Room(props : RouteComponentProps<{room: string}>){
 
     const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
-        socket.emit('join-room', localStorage.getItem("username")!, props.room, (status: number) => {
+        socket.emit('join-room', localStorage.getItem("username")!, props.match.params.room, (status: number) => {
             if(status === 0){
                 setOpen(true);
             }
         });
+
+        return () => {
+            socket.off('join-room');
+        }
     }, []);
 
     const handleClose = () => {
@@ -27,12 +31,10 @@ function Room(props : any){
     return (
         <div>
             <AlertDialog handleClose={handleClose} open={open}/>
-            <NavBar room={props.room}/>
+            <NavBar room={props.match.params.room}/>
             <Container maxWidth="lg">
-                <Player room={props.room}/>
+                <Player room={props.match.params.room}/>
             </Container>
         </div>
     )
 }
-
-export default withRouter(Room);
