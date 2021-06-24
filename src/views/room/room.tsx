@@ -19,7 +19,7 @@ export default function Room(props : RouteComponentProps<{room: string}>){
         });
 
         return () => {
-            socket.off('join-room');
+            socket.emit('leave', props.match.params.room);
         }
     }, []);
 

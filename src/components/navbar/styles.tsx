@@ -7,6 +7,10 @@ const useStyles = makeStyles((theme) => ({
         display: 'block',
       },
     },
+    linkTitle: {
+      color: "inherit",
+      textDecoration: "none"
+    },
     search: {
       marginRight: theme.spacing(2),
       position: 'relative',

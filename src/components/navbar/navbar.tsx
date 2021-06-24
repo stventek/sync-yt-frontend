@@ -8,6 +8,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import socket from '../../utilities/socket';
 import { useState } from 'react';
 import useStyles from './styles';
+import { Link } from 'react-router-dom';
 
 export default function NavBar(props : {room: string}) {
   const classes = useStyles();
@@ -40,7 +41,7 @@ export default function NavBar(props : {room: string}) {
       <AppBar position="fixed">
         <Toolbar>
           <Typography className={classes.title} variant="h6" noWrap>
-            Sync YT
+            <Link to="/" className={classes.linkTitle}>Sync YT</Link>
           </Typography>
             <div className={classes.search}>
               <div className={classes.searchIcon}>
