@@ -6,9 +6,18 @@ import { useEffect } from 'react';
 import AlertDialog from './dialog';
 import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
+import { makeStyles } from '@material-ui/core';
+import Chat from '../../components/chat/chat';
+
+const useStyles = makeStyles(theme => ({
+    container: {
+        height: `calc(100vh - 64px)`
+    }
+}))
 
 export default function Room(props : RouteComponentProps<{room: string}>){
 
+    const classes = useStyles();
     const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
@@ -32,9 +41,10 @@ export default function Room(props : RouteComponentProps<{room: string}>){
         <div>
             <AlertDialog handleClose={handleClose} open={open}/>
             <NavBar room={props.match.params.room}/>
-            <Container maxWidth="lg">
+            <div className={classes.container}>
                 <Player room={props.match.params.room}/>
-            </Container>
+                <Chat/>
+            </div>
         </div>
     )
 }

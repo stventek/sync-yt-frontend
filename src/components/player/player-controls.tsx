@@ -30,7 +30,8 @@ type controlsProps = {
 
 const useStyles = makeStyles(theme => ({
     controllsContainer: {
-        padding: theme.spacing(1,1),
+        height: 70,
+        padding: theme.spacing(1),
     },
     playButton: {
         padding: theme.spacing(1),

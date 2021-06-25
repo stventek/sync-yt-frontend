@@ -9,8 +9,7 @@ import { getDuration, seekTo } from "../../utilities/player-fix";
 const useStyles = makeStyles(theme => ({
     playerWrapper: {
         position: 'relative',
-        paddingTop: '56.25%',
-        marginTop: theme.spacing(2)
+        paddingTop: '56.25%'
     },
     reactPlayer: {
         position: 'absolute',

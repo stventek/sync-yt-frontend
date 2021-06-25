@@ -37,9 +37,9 @@ export default function NavBar(props : {room: string}) {
 
   return (
     <div>
-      <Toolbar/>
+      <Toolbar style={{height: 64}}/>
       <AppBar position="fixed">
-        <Toolbar>
+        <Toolbar style={{height: 64}}>
           <Typography className={classes.title} variant="h6" noWrap>
             <Link to="/" className={classes.linkTitle}>Sync YT</Link>
           </Typography>
