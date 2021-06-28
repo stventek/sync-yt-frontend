@@ -7,6 +7,12 @@ import { useState } from "react";
 import { getDuration, seekTo } from "../../utilities/player-fix";
 
 const useStyles = makeStyles(theme => ({
+    container: {
+        flexGrow: 1,
+        [theme.breakpoints.down('sm')]: {
+
+        }
+    },
     playerWrapper: {
         position: 'relative',
         paddingTop: '56.25%'
@@ -82,7 +88,7 @@ export default function Player(props: {room: string}){
     }, []);
 
     return (
-        <div>
+        <div className={classes.container}>
             <div className={classes.playerWrapper}>
                 <div id="youtube-player" className={classes.reactPlayer}/>
             </div>

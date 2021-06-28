@@ -8,10 +8,25 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import Chat from '../../components/chat/chat';
+import Grid from '@material-ui/core/Grid';
 
 const useStyles = makeStyles(theme => ({
+    maxWithXl: {
+        maxWidth: 1700
+    },
     container: {
-        height: `calc(100vh - 64px)`
+        paddingTop: theme.spacing(2),
+        height: `calc(100vh - 64px)`,
+        [theme.breakpoints.down('sm')]: {
+            padding: 0
+        }
+    },
+    gridContainer: {
+        display: 'flex',
+        height: '100%',
+        [theme.breakpoints.down('sm')]: {
+            flexDirection: 'column'
+        }
     }
 }))
 
@@ -41,10 +56,12 @@ export default function Room(props : RouteComponentProps<{room: string}>){
         <div>
             <AlertDialog handleClose={handleClose} open={open}/>
             <NavBar room={props.match.params.room}/>
-            <div className={classes.container}>
-                <Player room={props.match.params.room}/>
-                <Chat/>
-            </div>
+            <Container maxWidth="xl"  classes={{maxWidthXl: classes.maxWithXl, root: classes.container}}>
+                <div className={classes.gridContainer}>
+                    <Player room={props.match.params.room}/>
+                    <Chat room={props.match.params.room}/>
+                </div>
+            </Container>
         </div>
     )
 }

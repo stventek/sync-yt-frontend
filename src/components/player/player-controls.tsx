@@ -30,7 +30,7 @@ type controlsProps = {
 
 const useStyles = makeStyles(theme => ({
     controllsContainer: {
-        height: 70,
+        height: 85,
         padding: theme.spacing(1),
     },
     playButton: {
@@ -73,7 +73,7 @@ export default function PlayerControls(props: controlsProps){
 
     return (
         <div>
-            <Paper className={classes.controllsContainer}>
+            <Paper variant="outlined" square className={classes.controllsContainer}>
                 <Slider className={classes.vidBar} value={state.time} onChangeCommitted={handleSeekTo} color="secondary" ValueLabelComponent={ValueLabelComponent} min={0} max={props.end} valueLabelDisplay="auto" valueLabelFormat={x => msToTime(x)}/>
                 <IconButton className={classes.playButton} onClick={handleToggle}>
                     {props.pause ? <PlayArrowIcon/> : <PauseIcon/>}
