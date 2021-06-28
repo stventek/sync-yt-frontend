@@ -9,7 +9,7 @@ import SendIcon from '@material-ui/icons/Send';
 import Divider from "@material-ui/core/Divider";
 import Hidden from "@material-ui/core/Hidden";
 import Box from "@material-ui/core/Box";
-import FileCopyIcon from '@material-ui/icons/FileCopy';
+import socket from "../../utilities/socket";
 
 const useStyles = makeStyles(theme => ({
     chatControls: {
@@ -44,11 +44,18 @@ export default function Chat(props: {room: string}){
     const classes = useStyles();
     const [state, setState] = useState({message: ""})
 
-    const handleInputChange = (event : any) => {
-        setState({
-          ...state,
-          [event.target.name]: event.target.value
-        });
+    const handleInputChange = (e : any) => {
+        const lastChar = e.target.value.substr(-1);
+        if(e.target.value.substr(-1) === "\n" && state.message.length === 0)
+            return;
+        if(lastChar === "\n"){
+            e.preventDefault();
+            setState({...state, message: ""});
+            socket.emit('message', props.room, state.message);
+        }
+        else{
+            setState({...state, [e.target.name]: e.target.value});   
+        }
     };
 
     return (
@@ -61,7 +68,7 @@ export default function Chat(props: {room: string}){
             </Hidden>
             <Messages room={props.room}/>
             <div className={classes.chatControls}>
-                <TextField name="message" variant="outlined" onChange={handleInputChange} className={classes.typeMessage} placeholder="Send a message" multiline rowsMax={4} fullWidth/>
+                <TextField name="message" value={state.message} variant="outlined" onChange={handleInputChange} className={classes.typeMessage} placeholder="Send a message" multiline rowsMax={4} fullWidth/>
                 <Box textAlign="right" marginTop={1}>
                     <IconButton color="primary">
                         <SendIcon/>

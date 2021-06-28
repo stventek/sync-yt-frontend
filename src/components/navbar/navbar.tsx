@@ -9,6 +9,7 @@ import socket from '../../utilities/socket';
 import { useState } from 'react';
 import useStyles from './styles';
 import { Link } from 'react-router-dom';
+import validateVideoURL from '../../utilities/validate-yt-url';
 
 export default function NavBar(props : {room: string}) {
   const classes = useStyles();
@@ -18,13 +19,10 @@ export default function NavBar(props : {room: string}) {
   const handlePlay = (e: any) => {
     if(e.keyCode === 13){
       e.preventDefault();
-      try{
-        const videoId = state.url.split('v=')[1];
-        socket.emit('play', props.room, videoId);
-      }
-      catch(err){
-        console.log('invalid url')
-      }
+      const videoId = validateVideoURL(state.url);
+      if(videoId === null)
+        return console.log("invalid video url");
+      socket.emit('play', props.room, videoId);
     }
   }
   
