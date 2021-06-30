@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const socket = io('http://localhost:5000');
+const socket = io('https://sync-yt-backend.herokuapp.com/');
 
 socket.on('connect', () => {
     console.log('connection established');
