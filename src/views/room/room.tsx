@@ -56,7 +56,7 @@ export default function Room(props : RouteComponentProps<{room: string}>){
         <div>
             <AlertDialog handleClose={handleClose} open={open}/>
             <NavBar room={props.match.params.room}/>
-            <Container maxWidth="xl"  classes={{maxWidthXl: classes.maxWithXl, root: classes.container}}>
+            <Container maxWidth="lg"  classes={{maxWidthXl: classes.maxWithXl, root: classes.container}}>
                 <div className={classes.gridContainer}>
                     <Player room={props.match.params.room}/>
                     <Chat room={props.match.params.room}/>

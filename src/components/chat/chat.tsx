@@ -26,7 +26,7 @@ const useStyles = makeStyles(theme => ({
         height: 'calc(((100vw - 472px) * 0.5625) + 85px)',
         maxHeight: 'calc(((1700px - 472px) * 0.5625) + 85px)',
         */
-        height: '775px',
+        height: '541px',
         display: 'flex',
         flexDirection: 'column',
         width: 400,
@@ -42,21 +42,32 @@ const useStyles = makeStyles(theme => ({
 
 export default function Chat(props: {room: string}){
     const classes = useStyles();
-    const [state, setState] = useState({message: ""})
+    const [state, setState] = useState({message: "", sendDisabled: true})
 
     const handleInputChange = (e : any) => {
-        const lastChar = e.target.value.substr(-1);
-        if(e.target.value.substr(-1) === "\n" && state.message.length === 0)
-            return;
-        if(lastChar === "\n"){
+        const message = e.target.value as string;
+        if(message[0] === '\n' || message[0] === ' '){
             e.preventDefault();
-            setState({...state, message: ""});
+            return;
+        }
+        if(message.substr(-1) === '\n'){
+            e.preventDefault();
             socket.emit('message', props.room, state.message);
+            setState({...state, message: "", sendDisabled: true});  
+            return;
         }
         else{
-            setState({...state, [e.target.name]: e.target.value});   
+            if(message === ''){
+                return setState({...state, message, sendDisabled: true});  
+            }
+            setState({...state, sendDisabled: false, message});
         }
     };
+
+    const sendMessage = (e: any) => {
+        setState({...state, message: "", sendDisabled: true});
+        socket.emit('message', props.room, state.message);
+    }
 
     return (
         <Paper square className={classes.chat} variant="outlined">
@@ -70,7 +81,7 @@ export default function Chat(props: {room: string}){
             <div className={classes.chatControls}>
                 <TextField name="message" value={state.message} variant="outlined" onChange={handleInputChange} className={classes.typeMessage} placeholder="Send a message" multiline rowsMax={4} fullWidth/>
                 <Box textAlign="right" marginTop={1}>
-                    <IconButton color="primary">
+                    <IconButton color="primary" onClick={sendMessage} disabled={state.sendDisabled}>
                         <SendIcon/>
                     </IconButton>
                 </Box>
