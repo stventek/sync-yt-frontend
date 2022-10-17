@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import { withRouter } from 'react-router';
 import { useState } from 'react';
+import UserConfigDialog from '../user-config/UserConfigDialog';
 
 const useStyles = makeStyles(theme => {
     return {
@@ -17,12 +18,15 @@ const useStyles = makeStyles(theme => {
 
 function JoinCard(props: any){
     const classes = useStyles();
-
-    const [state, setState] = useState({room: ''});
+    const [state, setState] = useState({room: '', configDialog: false});
 
     const handleSubmit = (e : any) => {
         e.preventDefault();
-        props.history.push(`/room/${state.room}`);
+        if(localStorage.getItem('username') === null){
+            setState({...state, configDialog: true})
+        }
+        else
+            props.history.push(`/room/${state.room}`);
     }
 
     const handleInputChange = (event : any) => {
@@ -32,8 +36,20 @@ function JoinCard(props: any){
         });
     };
 
+    const handleDialogConfigClose = () => {
+        setState({...state, configDialog: false})
+    }
+
+    const handleDialogConfigSave = (username: string, color: string) => {
+        localStorage.setItem('username', username)
+        localStorage.setItem('color', color)
+        setState({...state, configDialog: false})
+        props.history.push(`/room/${state.room}`);
+    }
+
     return (
         <div>
+            <UserConfigDialog handleClose={handleDialogConfigClose}  handleSave={handleDialogConfigSave} open={state.configDialog}/>
             <Card>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">

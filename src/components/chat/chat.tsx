@@ -3,18 +3,25 @@ import Button from "@material-ui/core/Button";
 import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { useState } from "react";
+import { useState, memo } from "react";
 import Messages from "./messages";
 import SendIcon from '@material-ui/icons/Send';
 import Divider from "@material-ui/core/Divider";
 import Hidden from "@material-ui/core/Hidden";
 import Box from "@material-ui/core/Box";
 import socket from "../../utilities/socket";
+import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
+import { PickerConfig } from "emoji-picker-react/dist/config/config";
+
+const EmojiPickerMemo = memo((props: PickerConfig) => {
+    return <EmojiPicker {...props} previewConfig={{showPreview: false}}/>
+})
 
 const useStyles = makeStyles(theme => ({
-    chatControls: {
-        padding: theme.spacing(0, 2),
-        paddingBottom: theme.spacing(2)
+    '@global': {
+        '.EmojiPickerReact': {
+            '--epr-emoji-size': '25px'
+        }
     },
     typeMessage: {
         [`& fieldset`]: {
@@ -26,7 +33,7 @@ const useStyles = makeStyles(theme => ({
         height: 'calc(((100vw - 472px) * 0.5625) + 85px)',
         maxHeight: 'calc(((1700px - 472px) * 0.5625) + 85px)',
         */
-        height: '541px',
+        height: '620px',
         display: 'flex',
         flexDirection: 'column',
         width: 400,
@@ -78,14 +85,17 @@ export default function Chat(props: {room: string}){
                 <Divider />
             </Hidden>
             <Messages room={props.room}/>
-            <div className={classes.chatControls}>
-                <TextField name="message" value={state.message} variant="outlined" onChange={handleInputChange} className={classes.typeMessage} placeholder="Send a message" multiline rowsMax={4} fullWidth/>
-                <Box textAlign="right" marginTop={1}>
-                    <IconButton color="primary" onClick={sendMessage} disabled={state.sendDisabled}>
-                        <SendIcon/>
-                    </IconButton>
-                </Box>
-            </div>
+            <Box paddingLeft={1} paddingRight={1} paddingBottom={1}>
+                <TextField name="message" value={state.message} variant="outlined" onChange={handleInputChange} className={classes.typeMessage} placeholder="Send a message" multiline maxRows={4} fullWidth/>
+            </Box>
+            <Box paddingLeft={1} paddingRight={1} paddingBottom={1}><EmojiPickerMemo emojiStyle={EmojiStyle.GOOGLE} height={255} width="100%"/></Box>
+            <Hidden smDown>
+                    <Box textAlign="right" paddingBottom={1}>
+                        <IconButton color="primary" onClick={sendMessage} disabled={state.sendDisabled}>
+                            <SendIcon/>
+                        </IconButton>
+                    </Box>
+            </Hidden>
         </Paper>
     )
 }

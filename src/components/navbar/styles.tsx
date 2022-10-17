@@ -1,4 +1,4 @@
-import { fade, makeStyles } from '@material-ui/core/styles';
+import { alpha, makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles((theme) => ({
     title: {
@@ -15,9 +15,9 @@ const useStyles = makeStyles((theme) => ({
       marginRight: theme.spacing(2),
       position: 'relative',
       borderRadius: theme.shape.borderRadius,
-      backgroundColor: fade(theme.palette.common.white, 0.15),
+      backgroundColor: alpha(theme.palette.common.white, 0.15),
       '&:hover': {
-        backgroundColor: fade(theme.palette.common.white, 0.25),
+        backgroundColor: alpha(theme.palette.common.white, 0.25),
       },
       width: '100%',
       [theme.breakpoints.up('sm')]: {

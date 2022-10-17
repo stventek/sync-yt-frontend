@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-type message = {message: string, author: string};
+type message = {message: string, author: string, color: string};
 
 const Messages = React.memo((props : {room: string}) => {
     const classes = useStyles();
@@ -53,8 +53,9 @@ const Messages = React.memo((props : {room: string}) => {
             {messages.map((message, index) => {
                 return (
                     <div key={index}>
-                        <Typography variant="body1" component="span" color="primary">
-                            <Box fontWeight={700} component="span">{message.author}: </Box>
+                        <Typography variant="body1" component="span">
+                            {message.author === 'server' ? null:
+                            <Box fontWeight={700} color={message.color} component="span">{message.author}: </Box>}
                         </Typography>
                         <Typography variant="body1" component="span">{message.message}</Typography>
                     </div>

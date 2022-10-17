@@ -4,7 +4,7 @@ import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import makeStyles from '@material-ui/core/styles/makeStyles';
 import Typography from '@material-ui/core/Typography';
-import {useEffect} from 'react';
+import NavBar from '../../components/navbar/navbar';
 
 const useStyles = makeStyles(theme => {
     return {
@@ -17,14 +17,11 @@ const useStyles = makeStyles(theme => {
 
 export default function Home(){
 
-    useEffect(() => {
-        if(localStorage.getItem('username') === null)
-            localStorage.setItem('username', `anonymous${Math.floor(Math.random() * 10000)}`)
-    }, []);
-
     const classes = useStyles();
+
     return (
         <div>
+            <NavBar withChangeVideoInput={false}/>
             <Typography align="center" variant="h4" className={classes.root} component="h1">Watch videos together</Typography>
             <Container maxWidth="xs">
                 <Grid container direction="column" spacing={2} justify="center">

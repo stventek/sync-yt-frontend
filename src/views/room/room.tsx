@@ -8,7 +8,7 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import Chat from '../../components/chat/chat';
-import Grid from '@material-ui/core/Grid';
+import EmojiPicker from 'emoji-picker-react';
 
 const useStyles = makeStyles(theme => ({
     maxWithXl: {
@@ -36,10 +36,14 @@ export default function Room(props : RouteComponentProps<{room: string}>){
     const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
-        socket.emit('join-room', localStorage.getItem("username")!, props.match.params.room, (status: number) => {
-            if(status === 0){
-                setOpen(true);
-            }
+        socket.emit('join-room', 
+            localStorage.getItem("username")!, 
+            props.match.params.room,
+            localStorage.getItem("color")!,
+            (status: number) => {
+                if(status === 0){
+                    setOpen(true);
+                }
         });
 
         return () => {
@@ -55,7 +59,7 @@ export default function Room(props : RouteComponentProps<{room: string}>){
     return (
         <div>
             <AlertDialog handleClose={handleClose} open={open}/>
-            <NavBar room={props.match.params.room}/>
+            <NavBar room={props.match.params.room} withChangeVideoInput={true}/>
             <Container maxWidth="lg"  classes={{maxWidthXl: classes.maxWithXl, root: classes.container}}>
                 <div className={classes.gridContainer}>
                     <Player room={props.match.params.room}/>
