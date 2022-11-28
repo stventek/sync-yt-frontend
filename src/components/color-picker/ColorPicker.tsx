@@ -1,7 +1,7 @@
 import React from 'react';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import { Grid, makeStyles } from "@material-ui/core";
+import { Grid } from "@material-ui/core";
 import Tooltip from '@material-ui/core/Tooltip';
 import ColorRadioIcon from './ColorRadioIcon';
 

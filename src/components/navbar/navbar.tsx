@@ -8,9 +8,10 @@ import useStyles from './styles';
 import { Link } from 'react-router-dom';
 import UserConfigDialog from '../user-config/UserConfigDialog';
 import ChangeVideoInput from './ChangeVideoInput';
+import Button from '@material-ui/core/Button';
 
-type propWithChangeVideoInput = {withChangeVideoInput: true, room: string}
-type prop = {withChangeVideoInput: false}
+type propWithChangeVideoInput = {withChangeVideoInput: true, room: string, useConfigDialog?: boolean, logOut?: boolean}
+type prop = {withChangeVideoInput: false, useConfigDialog?: boolean, logOut?: boolean}
 
 export default function NavBar(props : prop | propWithChangeVideoInput) {
   const classes = useStyles();
@@ -34,7 +35,11 @@ export default function NavBar(props : prop | propWithChangeVideoInput) {
 
   return (
     <div>
-      <UserConfigDialog handleClose={handleDialogConfigClose}  handleSave={handleDialogConfigSave} open={state.configDialog}/>
+      {props.useConfigDialog ? 
+        <UserConfigDialog 
+        handleClose={handleDialogConfigClose}  
+        handleSave={handleDialogConfigSave} 
+        open={state.configDialog}/>: undefined}
       <Toolbar style={{height: 64}}/>
       <AppBar position="fixed">
         <Toolbar style={{height: 64}}>
@@ -42,9 +47,13 @@ export default function NavBar(props : prop | propWithChangeVideoInput) {
             <Link to="/" className={classes.linkTitle}>Sync YT</Link>
           </Typography>
           { props.withChangeVideoInput ? <ChangeVideoInput room={props.room}/> : undefined}
-          <IconButton style={props.withChangeVideoInput ? undefined : {marginLeft: "auto"}} color="inherit" onClick={handleDialogConfigOpen}>
+          {props.useConfigDialog ? <IconButton 
+            style={props.withChangeVideoInput ? undefined : {marginLeft: "auto"}} 
+            color="inherit" 
+            onClick={handleDialogConfigOpen}>
             <SettingsIcon/>
-          </IconButton>
+          </IconButton>: undefined}
+          {props.logOut ? <Button color="inherit" style={{marginLeft: "auto"}}>Log Out</Button> : undefined}
         </Toolbar>
       </AppBar>
     </div>

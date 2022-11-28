@@ -8,7 +8,6 @@ import React from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import Chat from '../../components/chat/chat';
-import EmojiPicker from 'emoji-picker-react';
 
 const useStyles = makeStyles(theme => ({
     maxWithXl: {
@@ -18,7 +17,7 @@ const useStyles = makeStyles(theme => ({
         paddingTop: theme.spacing(2),
         height: `calc(100vh - 64px)`,
         [theme.breakpoints.down('sm')]: {
-            padding: 0
+            padding: 0,
         }
     },
     gridContainer: {
@@ -59,7 +58,7 @@ export default function Room(props : RouteComponentProps<{room: string}>){
     return (
         <div>
             <AlertDialog handleClose={handleClose} open={open}/>
-            <NavBar room={props.match.params.room} withChangeVideoInput={true}/>
+            <NavBar room={props.match.params.room} withChangeVideoInput={true} useConfigDialog={true}/>
             <Container maxWidth="lg"  classes={{maxWidthXl: classes.maxWithXl, root: classes.container}}>
                 <div className={classes.gridContainer}>
                     <Player room={props.match.params.room}/>
