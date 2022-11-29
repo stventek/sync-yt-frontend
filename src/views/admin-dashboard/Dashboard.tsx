@@ -62,8 +62,11 @@ const initResState = {
 var fromDate = new Date()
 var toDate = new Date()
 
-fromDate.setMonth(new Date().getMonth())
-toDate.setMonth(new Date().getMonth() + 1)
+fromDate.setDate(1);
+fromDate.setMonth(fromDate.getMonth()-1);
+
+toDate.setDate(30);
+toDate.setMonth(toDate.getMonth());
 
 const initState = {
     fromDate: fromDate.toISOString(),
