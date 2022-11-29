@@ -1,22 +1,31 @@
-import { makeStyles, Paper } from "@material-ui/core";
+import { Checkbox, makeStyles, Paper, Switch } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { useState, memo } from "react";
+import { useState, memo, useCallback, useEffect } from "react";
 import Messages from "./messages";
 import SendIcon from '@material-ui/icons/Send';
 import Divider from "@material-ui/core/Divider";
 import Hidden from "@material-ui/core/Hidden";
 import Box from "@material-ui/core/Box";
 import socket from "../../utilities/socket";
-import EmojiPicker, { EmojiStyle } from 'emoji-picker-react';
+import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 import { PickerConfig } from "emoji-picker-react/dist/config/config";
+import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import { green } from "@material-ui/core/colors";
 
 const EmojiPickerMemo = memo((props: PickerConfig) => {
     return <EmojiPicker {...props} previewConfig={{showPreview: false}}/>
 })
 
 const useStyles = makeStyles(theme => ({
+    iconCheckbox: {
+        '&$checked': {
+            color: '#fcc83f',
+        },
+    },
+    checked: {},
     '@global': {
         '.EmojiPickerReact': {
             '--epr-emoji-size': '25px'
@@ -48,7 +57,9 @@ const useStyles = makeStyles(theme => ({
 
 export default function Chat(props: {room: string}){
     const classes = useStyles();
-    const [state, setState] = useState({message: "", sendDisabled: true})
+    const [state, setState] = useState({message: "", sendDisabled: true, emojiChecked: false})
+    const [emojiChecked, setEmojiChecked] = useState(false)
+    const scrollId = 'messageScrollId';
 
     const handleInputChange = (e : any) => {
         const message = e.target.value as string;
@@ -70,10 +81,24 @@ export default function Chat(props: {room: string}){
         }
     };
 
+    useEffect(() => {
+        if(emojiChecked) document.getElementById(scrollId)?.scrollIntoView({ behavior: 'smooth' })
+    }, [emojiChecked])
+
     const sendMessage = (e: any) => {
         setState({...state, message: "", sendDisabled: true});
         socket.emit('message', props.room, state.message);
     }
+
+    const handleChecked = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setEmojiChecked(!emojiChecked)
+    }
+
+    const handleEmojiPick = useCallback((e: EmojiClickData) => {
+        setState((s) => {
+            return {...s, message: s.message + e.emoji, sendDisabled: false}
+        })
+    }, [])
 
     return (
         <Paper square className={classes.chat} variant="outlined">
@@ -83,11 +108,30 @@ export default function Chat(props: {room: string}){
                 </Typography>
                 <Divider />
             </Hidden>
-            <Messages room={props.room}/>
+            <Messages scrollId={scrollId} room={props.room}/>
             <Box paddingLeft={1} paddingRight={1} paddingBottom={1}>
-                <TextField name="message" value={state.message} variant="outlined" onChange={handleInputChange} className={classes.typeMessage} placeholder="Send a message" multiline maxRows={4} fullWidth/>
+                <TextField 
+                    name="message" 
+                    value={state.message} 
+                    variant="outlined" 
+                    onChange={handleInputChange} 
+                    className={classes.typeMessage} 
+                    placeholder="Send a message" 
+                    multiline maxRows={4} 
+                    InputProps={{endAdornment: (<InputAdornment position="end">
+                        <Checkbox onChange={handleChecked} checked={emojiChecked} color="default" classes={{root: classes.iconCheckbox, checked: classes.checked}} icon={<EmojiEmotionsIcon/>} checkedIcon={<EmojiEmotionsIcon/>}/>
+                        </InputAdornment>)}}
+                    fullWidth/>
             </Box>
-            <Box paddingLeft={1} paddingRight={1} paddingBottom={1}><EmojiPickerMemo emojiStyle={EmojiStyle.GOOGLE} height={255} width="100%"/></Box>
+            <Box hidden={!emojiChecked} paddingLeft={1} 
+                paddingRight={1} 
+                paddingBottom={1}>
+                    <EmojiPickerMemo 
+                        onEmojiClick={handleEmojiPick}	
+                        emojiStyle={EmojiStyle.GOOGLE} 
+                        height={255} 
+                        width="100%"/>
+            </Box>
             <Hidden smDown>
                     <Box textAlign="right" paddingBottom={1}>
                         <IconButton color="primary" onClick={sendMessage} disabled={state.sendDisabled}>

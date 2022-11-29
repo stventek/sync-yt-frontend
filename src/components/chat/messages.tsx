@@ -18,7 +18,7 @@ const useStyles = makeStyles(theme => ({
 
 type message = {message: string, author: string, color: string};
 
-const Messages = React.memo((props : {room: string}) => {
+const Messages = React.memo((props : {room: string, scrollId: string}) => {
     const classes = useStyles();
     const [messages, setMessages] = useState<message[]>([]);
     const scrollRef = useRef<any>(null);
@@ -61,7 +61,7 @@ const Messages = React.memo((props : {room: string}) => {
                     </div>
                 )
             })}
-            <div ref={scrollRef}/>
+            <div ref={scrollRef} id={props.scrollId}/>
         </div>
     )
 })

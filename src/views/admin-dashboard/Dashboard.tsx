@@ -1,6 +1,6 @@
-import { Box, Container, Grid, Typography } from "@material-ui/core"
+import { Box, Button, Container, Grid, Typography } from "@material-ui/core"
 import useStyles from './styles'
-import { useState } from 'react'
+import { ChangeEvent, FormEvent, useState } from 'react'
 import axios from "axios"
 import { useEffect } from 'react'
 import { useHistory } from 'react-router-dom'
@@ -15,9 +15,14 @@ import {
     Tooltip,
     Legend,
   } from 'chart.js';
-  import { Line } from 'react-chartjs-2';
+  import { Line } from 'react-chartjs-2'
 import { getTimeString } from "../../utilities/date-helpers"
 import NavBar from "../../components/navbar/navbar"
+import {KeyboardDatePicker} from '@material-ui/pickers'
+import MomentUtils from '@date-io/moment'
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { MaterialUiPickersDate } from "@material-ui/pickers/typings/date"
+import DashboardFilters from "./DashboardFilters"
 
 ChartJS.register(
     CategoryScale,
@@ -42,7 +47,7 @@ ChartJS.register(
     },
   };
 
-const initState = {
+const initResState = {
     activeRooms: 0,
     activeUsers: 0,
     totalCreated: 0,
@@ -54,7 +59,19 @@ const initState = {
     }
 }
 
-type steateType = typeof initState;
+var fromDate = new Date()
+var toDate = new Date()
+
+fromDate.setMonth(new Date().getMonth())
+toDate.setMonth(new Date().getMonth() + 1)
+
+const initState = {
+    fromDate: fromDate.toISOString(),
+    toDate: toDate.toISOString(),
+    groupBy: 'day'
+}
+
+type resType = typeof initResState;
 
 export default function Dashboard(){
 
@@ -62,53 +79,89 @@ export default function Dashboard(){
     const history = useHistory();
 
     const [state, setState] = useState(initState)
-    //const [errors, setErrors] = useState([] as Array<{message: string, field: string}>)
+    const [res, setRes] = useState(initResState)
 
-    useEffect(()=> {
+    const updateDashboard = () => {
         const params = {
-            fromDate:'2022-01-01T00:00:00.000+00',
-            toDate:'2023-11-30T00:00:00.000+00',
-            groupBy:'month'
+            fromDate: state.fromDate,
+            toDate: state.toDate,
+            groupBy: state.groupBy
         }
-        axios.get<steateType>('http://localhost:5000/admin/dashboard', {params})
+        axios.get<resType>('http://localhost:5000/admin/dashboard', {params})
             .then((e) => {
                 e.data.graph.labels = e.data.graph.labels.map(e => getTimeString(e))
                 e.data.graph.datasets[0].borderColor = 'rgb(255, 99, 132)'
                 e.data.graph.datasets[0].backgroundColor = 'rgba(255, 99, 132, 0.5)'
                 e.data.graph.datasets[1].borderColor = 'rgb(53, 162, 235)'
                 e.data.graph.datasets[1].backgroundColor = 'rgba(53, 162, 235, 0.5)'
-                setState(e.data)
+                setRes({...res, ...e.data})
             }).catch(e => {
                 if(e.response.status === 401) history.push('/admin/signin')
             })
+    }
+
+    useEffect(()=> {
+        updateDashboard()
     }, [])
+
+    const handleDateChange = (event: MaterialUiPickersDate, name: string) => {
+        if(event)
+            setState({
+                ...state,
+                [name]: event.toISOString()
+            });
+    };
+
+    const handleDashboarUpdate = ((e: FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        updateDashboard()
+    })
+
+    
+    const handleChange = (event: ChangeEvent<{name?: string | undefined, value: unknown}>) => {
+        if(event.target.name)
+            setState({
+                ...state,
+                [event.target.name]: event.target.value
+            });
+      };
 
     return <div>
         <NavBar withChangeVideoInput={false} logOut={true}/>
-        <Container maxWidth="md">
-            <Box mt={3}>
-                <Typography variant="h4">Dashboard</Typography>
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+            <Box maxWidth={850} overflow='clip' mr={3} ml={3}>
+                <Box mt={3}>
+                    <Typography variant="h4">Dashboard</Typography>
+                </Box>
+                <Box mt={3}>
+                    <Typography variant="h5" color="textSecondary">{res.welcomeMessage}</Typography>
+                </Box>
+                <form onSubmit={handleDashboarUpdate}>
+                    <DashboardFilters
+                        handleGroupByChange={handleChange}
+                        groupBy={state.groupBy} 
+                        fromDate={state.fromDate}
+                        toDate={state.toDate}
+                        handleDateChange={handleDateChange}/>
+                </form>
+                <Grid container spacing={2} className={classes.root}>
+                    <Grid item xs={12}>
+                        <Line options={options} data={res.graph}/>
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                        <StatsCard value={res.totalCreated} short="created" title="Total Created" bgcolor="rgba(255, 99, 132, 0.7)"></StatsCard>
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                        <StatsCard value={res.totalJoin} short="joined" title="Total Joined" bgcolor="rgba(53, 162, 235,0.7)"></StatsCard>
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                        <StatsCard value={res.activeRooms} short="active" title="Active Rooms"></StatsCard>
+                    </Grid>
+                    <Grid item xs={6} md={3}>
+                        <StatsCard value={res.activeUsers} short="active" title="Active Users"></StatsCard>
+                    </Grid>
+                </Grid>
             </Box>
-            <Box mt={3}>
-                <Typography variant="h5" color="textSecondary">{state.welcomeMessage}</Typography>
-            </Box>
-            <Grid container spacing={2} className={classes.root}>
-                <Grid item xs={12}>
-                    <Line options={options} data={state.graph}/>
-                </Grid>
-                <Grid item xs={6} md={3}>
-                    <StatsCard value={state.totalCreated} short="created" title="Total Created" bgcolor="rgba(255, 99, 132, 0.7)"></StatsCard>
-                </Grid>
-                <Grid item xs={6} md={3}>
-                    <StatsCard value={state.totalJoin} short="joined" title="Total Joined" bgcolor="rgba(53, 162, 235,0.7)"></StatsCard>
-                </Grid>
-                <Grid item xs={6} md={3}>
-                    <StatsCard value={state.activeRooms} short="active" title="Active Rooms"></StatsCard>
-                </Grid>
-                <Grid item xs={6} md={3}>
-                    <StatsCard value={state.activeUsers} short="active" title="Active Users"></StatsCard>
-                </Grid>
-            </Grid>
-        </Container>
+        </div>
     </div>
 }

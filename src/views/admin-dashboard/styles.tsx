@@ -7,6 +7,9 @@ const useStyles = makeStyles(theme => {
         },
         numberCard: {
             height: 230
+        },
+        filterItem: {
+            margin: theme.spacing(1)
         }
     }
 });
