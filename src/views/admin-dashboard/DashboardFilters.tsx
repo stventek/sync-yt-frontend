@@ -65,7 +65,7 @@ export default function DashboardFilters(props: props){
                 type="submit"
                 variant="contained" 
                 className={classes.filterItem} 
-                style={{ background: '#3ea6ff', width: 90}}>
+                style={{ background: '#065fd4', width: 90, color: 'white'}}>
                     Update
             </Button>
         </MuiPickersUtilsProvider>
