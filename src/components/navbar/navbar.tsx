@@ -26,20 +26,17 @@ export default function NavBar(props : prop | propWithChangeVideoInput) {
     setState({...state, configDialog: false})
   }
 
-  const handleDialogConfigSave = (username: string, color: string) => {
-    localStorage.setItem('username', username)
-    localStorage.setItem('color', color)
+  const handleDialogConfigSave = () => {
     setState({...state, configDialog: false})
   }
 
 
   return (
     <div>
-      {props.useConfigDialog ? 
+      {props.useConfigDialog && state.configDialog? 
         <UserConfigDialog 
         handleClose={handleDialogConfigClose}  
-        handleSave={handleDialogConfigSave} 
-        open={state.configDialog}/>: undefined}
+        handleSave={handleDialogConfigSave}/> : undefined}
       <Toolbar style={{height: 64}}/>
       <AppBar position="fixed">
         <Toolbar style={{height: 64}}>

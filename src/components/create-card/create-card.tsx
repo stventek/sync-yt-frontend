@@ -35,8 +35,7 @@ function CreateCard(props: any){
         setState({...state, configDialog: false})
     }
 
-    const handleDialogConfigSave = (username: string) => {
-        localStorage.setItem('username', username)
+    const handleDialogConfigSave = () => {
         setState({...state, configDialog: false})
         socket.emit('create-room', (room: number) => {
             props.history.push(`/room/${room}`);
@@ -45,7 +44,10 @@ function CreateCard(props: any){
 
     return (
         <div>
-            <UserConfigDialog handleClose={handleDialogConfigClose}  handleSave={handleDialogConfigSave} open={state.configDialog}/>
+            {state.configDialog ? 
+            <UserConfigDialog 
+                handleClose={handleDialogConfigClose}  
+                handleSave={handleDialogConfigSave}/> : undefined}
             <Card>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">

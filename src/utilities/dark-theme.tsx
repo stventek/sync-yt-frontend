@@ -1,6 +1,7 @@
 import { createTheme } from "@material-ui/core";
 
-const lightTheme = createTheme({palette:  {
+const darkTheme = createTheme({palette:  {
+    type: 'dark',
     primary: {
         main: '#000'
     },
@@ -9,4 +10,4 @@ const lightTheme = createTheme({palette:  {
     }
 }});
 
-export default lightTheme;
+export default darkTheme;

@@ -40,16 +40,17 @@ function JoinCard(props: any){
         setState({...state, configDialog: false})
     }
 
-    const handleDialogConfigSave = (username: string, color: string) => {
-        localStorage.setItem('username', username)
-        localStorage.setItem('color', color)
+    const handleDialogConfigSave = () => {
         setState({...state, configDialog: false})
         props.history.push(`/room/${state.room}`);
     }
 
     return (
         <div>
-            <UserConfigDialog handleClose={handleDialogConfigClose}  handleSave={handleDialogConfigSave} open={state.configDialog}/>
+            {state.configDialog ? 
+            <UserConfigDialog 
+                handleClose={handleDialogConfigClose}  
+                handleSave={handleDialogConfigSave}/> : undefined}
             <Card>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">

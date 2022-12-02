@@ -9,7 +9,7 @@ import Divider from "@material-ui/core/Divider";
 import Hidden from "@material-ui/core/Hidden";
 import Box from "@material-ui/core/Box";
 import socket from "../../utilities/socket";
-import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
+import EmojiPicker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-react';
 import { PickerConfig } from "emoji-picker-react/dist/config/config";
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import InputAdornment from '@material-ui/core/InputAdornment';
@@ -60,7 +60,7 @@ export default function Chat(props: {room: string}){
     const [state, setState] = useState({message: "", sendDisabled: true, emojiChecked: false})
     const [emojiChecked, setEmojiChecked] = useState(false)
     const scrollId = 'messageScrollId';
-
+    const mode = localStorage.getItem('mode') === 'light' ? Theme.LIGHT : Theme.DARK
     const handleInputChange = (e : any) => {
         const message = e.target.value as string;
         if(message[0] === '\n' || message[0] === ' '){
@@ -126,7 +126,8 @@ export default function Chat(props: {room: string}){
             <Box hidden={!emojiChecked} paddingLeft={1} 
                 paddingRight={1} 
                 paddingBottom={1}>
-                    <EmojiPickerMemo 
+                    <EmojiPickerMemo
+                        theme={ mode }
                         onEmojiClick={handleEmojiPick}	
                         emojiStyle={EmojiStyle.GOOGLE} 
                         height={255} 
