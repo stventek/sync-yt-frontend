@@ -2,7 +2,7 @@ import { Checkbox, makeStyles, Paper, Switch } from "@material-ui/core";
 import IconButton from "@material-ui/core/IconButton";
 import TextField from "@material-ui/core/TextField";
 import Typography from "@material-ui/core/Typography";
-import { useState, memo, useCallback, useEffect } from "react";
+import { useState, memo, useCallback, useEffect, ChangeEvent } from "react";
 import Messages from "./messages";
 import SendIcon from '@material-ui/icons/Send';
 import Divider from "@material-ui/core/Divider";
@@ -13,7 +13,6 @@ import EmojiPicker, { EmojiClickData, EmojiStyle, Theme } from 'emoji-picker-rea
 import { PickerConfig } from "emoji-picker-react/dist/config/config";
 import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import InputAdornment from '@material-ui/core/InputAdornment';
-import { green } from "@material-ui/core/colors";
 
 const EmojiPickerMemo = memo((props: PickerConfig) => {
     return <EmojiPicker {...props} previewConfig={{showPreview: false}}/>
@@ -22,13 +21,21 @@ const EmojiPickerMemo = memo((props: PickerConfig) => {
 const useStyles = makeStyles(theme => ({
     iconCheckbox: {
         '&$checked': {
-            color: '#fcc83f',
+            color: '#fcc83f'
         },
     },
     checked: {},
     '@global': {
         '.EmojiPickerReact': {
-            '--epr-emoji-size': '25px'
+            '--epr-emoji-size': '25px',
+        },
+        '.EmojiPickerReact.epr-dark-theme': {
+            '--epr-emoji-size': '25px',
+            '--epr-bg-color': theme.palette.background.paper,
+            '--epr-category-label-bg-color': theme.palette.background.paper
+        },
+        'aside.EmojiPickerReact.epr-main': {
+            borderColor: theme.palette.background.paper
         }
     },
     typeMessage: {
@@ -59,9 +66,10 @@ export default function Chat(props: {room: string}){
     const classes = useStyles();
     const [state, setState] = useState({message: "", sendDisabled: true, emojiChecked: false})
     const [emojiChecked, setEmojiChecked] = useState(false)
-    const scrollId = 'messageScrollId';
+    const scrollId = 'messageScrollId'
     const mode = localStorage.getItem('mode') === 'light' ? Theme.LIGHT : Theme.DARK
-    const handleInputChange = (e : any) => {
+
+    const handleInputChange = (e : ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const message = e.target.value as string;
         if(message[0] === '\n' || message[0] === ' '){
             e.preventDefault();

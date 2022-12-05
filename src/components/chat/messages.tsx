@@ -6,6 +6,8 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { useState } from "react";
 import socket from "../../utilities/socket";
+import { parseTextWithEmojis } from "../../utilities/parseTextWithEmojis";
+import {EmojiStyle } from "emoji-picker-react";
 
 const useStyles = makeStyles(theme => ({
     container: {
@@ -57,7 +59,11 @@ const Messages = React.memo((props : {room: string, scrollId: string}) => {
                             {message.author === 'server' ? null:
                             <Box fontWeight={700} color={message.color} component="span">{message.author}: </Box>}
                         </Typography>
-                        <Typography variant="body1" component="span">{message.message}</Typography>
+                        <Typography 
+                            style={{verticalAlign: 'middle'}}
+                            variant="body1" 
+                            component="span">
+                                {parseTextWithEmojis(message.message)}</Typography>
                     </div>
                 )
             })}
