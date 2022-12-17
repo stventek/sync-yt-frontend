@@ -44,10 +44,10 @@ function CreateCard(props: any){
 
     return (
         <div>
-            {state.configDialog ? 
             <UserConfigDialog 
+                open={state.configDialog}
                 handleClose={handleDialogConfigClose}  
-                handleSave={handleDialogConfigSave}/> : undefined}
+                handleSave={handleDialogConfigSave}/>
             <Card>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">

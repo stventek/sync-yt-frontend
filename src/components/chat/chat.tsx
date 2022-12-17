@@ -15,7 +15,7 @@ import EmojiEmotionsIcon from '@material-ui/icons/EmojiEmotions';
 import InputAdornment from '@material-ui/core/InputAdornment';
 
 const EmojiPickerMemo = memo((props: PickerConfig) => {
-    return <EmojiPicker {...props} previewConfig={{showPreview: false}}/>
+    return <EmojiPicker {...props} previewConfig={{showPreview: false}} searchDisabled skinTonesDisabled/>
 })
 
 const useStyles = makeStyles(theme => ({

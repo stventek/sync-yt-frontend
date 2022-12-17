@@ -33,10 +33,10 @@ export default function NavBar(props : prop | propWithChangeVideoInput) {
 
   return (
     <div>
-      {props.useConfigDialog && state.configDialog? 
         <UserConfigDialog 
-        handleClose={handleDialogConfigClose}  
-        handleSave={handleDialogConfigSave}/> : undefined}
+          open={state.configDialog ? true : false}
+          handleClose={handleDialogConfigClose}  
+          handleSave={handleDialogConfigSave}/>
       <Toolbar style={{height: 64}}/>
       <AppBar position="fixed">
         <Toolbar style={{height: 64}}>

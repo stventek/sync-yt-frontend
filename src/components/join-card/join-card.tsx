@@ -22,7 +22,7 @@ function JoinCard(props: any){
 
     const handleSubmit = (e : any) => {
         e.preventDefault();
-        if(localStorage.getItem('username') === null){
+        if(localStorage.getItem('username') === null || localStorage.getItem('color') === null){
             setState({...state, configDialog: true})
         }
         else
@@ -47,10 +47,10 @@ function JoinCard(props: any){
 
     return (
         <div>
-            {state.configDialog ? 
-            <UserConfigDialog 
+            <UserConfigDialog
+                open={state.configDialog}
                 handleClose={handleDialogConfigClose}  
-                handleSave={handleDialogConfigSave}/> : undefined}
+                handleSave={handleDialogConfigSave}/>
             <Card>
                 <CardContent>
                     <Typography gutterBottom variant="h5" component="h2">

@@ -17,11 +17,15 @@ import Brightness4Icon from '@material-ui/icons/Brightness4';
 import SettingsBrightnessIcon from '@material-ui/icons/SettingsBrightness';
 import { ColorModeContext } from '../../App';
 
-
 type propsType = {
     handleClose : () => void,
-    handleSave: () => void
+    handleSave: () => void,
+    open: boolean
 }
+
+const ColorPickerMemo = React.memo((props: any) => {
+    return <ColorPicker handleChange={props.handleColorChange} value={props.color}/>
+})
 
 export default function UserConfigDialog(props: propsType) {
     const theme = useTheme();
@@ -56,14 +60,14 @@ export default function UserConfigDialog(props: propsType) {
         }
     }
 
-    const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData({
-            ...formData,
-            [event.target.name]: event.target.value
-          });
-      };
+    const handleColorChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
+        setFormData((state) => {
+            return {
+                ...formData,
+                [event.target.name]: event.target.value
+            }
+        })}, [])
 
-    
     const handleThemeChange = (event: React.MouseEvent<HTMLElement, MouseEvent>, value: string) => {
         setFormData({
             ...formData,
@@ -72,7 +76,7 @@ export default function UserConfigDialog(props: propsType) {
       }
 
     return <div>
-        <Dialog maxWidth="xs" fullScreen={fullScreen} open onClose={props.handleClose}>
+        <Dialog maxWidth="xs" fullScreen={fullScreen} open={props.open} onClose={props.handleClose}>
             <DialogTitle>User settings</DialogTitle>
             <DialogContent>
                 <DialogContentText>
@@ -94,7 +98,7 @@ export default function UserConfigDialog(props: propsType) {
                 />
                 <Typography variant="subtitle1">Change username color</Typography>
                 <Box mt={1}>
-                    <ColorPicker handleChange={handleColorChange} value={formData.color}/>
+                    <ColorPickerMemo handleColorChange={handleColorChange} value={formData.color}/>
                 </Box>
                 <Box mt={1}>
                 <ToggleButtonGroup
