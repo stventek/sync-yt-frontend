@@ -25,7 +25,8 @@ type controlsProps = {
     end: number,
     player: any,
     room: string,
-    pause: boolean
+    pause: boolean,
+    startUnix: number
 }
 
 const useStyles = makeStyles(theme => ({
@@ -44,21 +45,22 @@ const useStyles = makeStyles(theme => ({
 
 export default function PlayerControls(props: controlsProps){
 
-    const [state, setState] = useState({time: 0, timeDisplay: ""});
+    const [state, setState] = useState({time: 0, timeDisplay: "00"});
     const classes = useStyles();
 
     //takes player current time and sync it with the slider
     useEffect(() => {
         const interval = setInterval(() => {
-            props.player.getCurrentTime().then((time : any) => {
-                const millisec = time * 1000;
-                setState({...state, time: millisec, timeDisplay: msToTime(millisec)});
-            })
+            if(props.startUnix > 0 && !props.pause){
+                const millisec = (Date.now() - props.startUnix)
+                setState({...state, time: millisec, timeDisplay: msToTime(millisec)})
+            }
         }, 100);
+
         return () => {
             clearInterval(interval);
         };
-    },[])
+    },[props])
 
     const handleToggle = (e: any) => {
         if(props.pause)

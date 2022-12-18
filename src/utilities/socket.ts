@@ -1,6 +1,6 @@
 import io from 'socket.io-client';
 
-const socket = io('http://192.168.0.200:5000/');
+const socket = io(process.env.REACT_APP_API || 'http://localhost:500');
 
 socket.on('connect', () => {
     console.log('connection established');

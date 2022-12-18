@@ -18,10 +18,14 @@ Web app to watch youtube videos with others synchronously, includes:
 
 ## dev
 
+- create env.local file in the root dir with the following variables:
+    - REACT_APP_API, backend host
 - start dev server ```npm run start```
 
 ## prod
 
+- create .env.production file in the root dir with the following variables:
+    - REACT_APP_API, backend host
 - to create the bundle run ```npm run build```.
 - now you can serve the static files with your prefered server.
 

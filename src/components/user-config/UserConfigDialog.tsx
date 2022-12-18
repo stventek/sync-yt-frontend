@@ -61,7 +61,7 @@ export default function UserConfigDialog(props: propsType) {
     }
 
     const handleColorChange = React.useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-        setFormData((state) => {
+        setFormData((formData) => {
             return {
                 ...formData,
                 [event.target.name]: event.target.value

@@ -28,7 +28,6 @@ function App() {
 
   const theme = useMemo(
     () => {
-      console.log(mode)
       switch(mode) {
         case 'light':
           return createTheme(lightTheme)

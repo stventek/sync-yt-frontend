@@ -24,12 +24,12 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-type PlayerMeta = {start: number, end: number, pause: boolean};
+type PlayerMeta = {start: number, end: number, pause: boolean, startUnix: number};
 
 export default function Player(props: {room: string}){
     const classes = useStyles();
     const [player, setPlayer] = useState<any>(null);
-    const [playerMeta, setPlayerMeta] = useState<PlayerMeta>({start: 0, end: 0, pause: true});
+    const [playerMeta, setPlayerMeta] = useState<PlayerMeta>({start: 0, end: 0, pause: true, startUnix: 0});
 
     useEffect(() => {
         //type declaration files are wrong, thus the type of any
@@ -39,7 +39,7 @@ export default function Player(props: {room: string}){
         socket.on('play-recive', (videoId: string) => {
             setPlayer((player: any) => {
                 player.loadVideoById(videoId);
-                getDuration(player, false).then(end => setPlayerMeta(state => ({...state, end, start: 0, pause: false})));
+                getDuration(player, false).then(end => setPlayerMeta(state => ({...state, end, start: 0, pause: false, startUnix: Date.now()})));
                 return player;
                 }
             )
@@ -48,9 +48,9 @@ export default function Player(props: {room: string}){
         socket.on('update', ( playerInfo : {videoId: string, timeElapsed: number, pause: boolean}) => {
             setPlayer((player: any) => {
                 player.loadVideoById(playerInfo.videoId);
-                seekTo(player, playerInfo.timeElapsed);
+                //seekTo(player, playerInfo.timeElapsed);
                 getDuration(player, playerInfo.pause).then(end => {
-                    setPlayerMeta(state => ({...state, start: playerInfo.timeElapsed, end, pause: playerInfo.pause}));
+                    setPlayerMeta(state => ({...state, start: playerInfo.timeElapsed, end, pause: playerInfo.pause, startUnix: Date.now() - playerInfo.timeElapsed}));
                 })
                 return player;
             })
@@ -64,16 +64,16 @@ export default function Player(props: {room: string}){
         socket.on('resume-recive', (timeElapsed) => {
             setPlayer((player: any) => {
                 player.playVideo();
-                seekTo(player, timeElapsed);
-                setPlayerMeta(state => ({...state, start: timeElapsed, pause: false}));
+                //seekTo(player, timeElapsed);
+                setPlayerMeta(state => ({...state, start: timeElapsed, pause: false, startUnix: Date.now() - timeElapsed}));
                 return player;
             })
         });
 
         socket.on('seekTo-recive', (timeElapsed: number) => {
             setPlayer((player: any) => {
-                seekTo(player, timeElapsed);
-                setPlayerMeta(state => ({...state, start: timeElapsed}));
+                //seekTo(player, timeElapsed);
+                setPlayerMeta(state => ({...state, start: timeElapsed,  startUnix: Date.now() - timeElapsed}));
                 return player;
             })
         })
@@ -87,12 +87,27 @@ export default function Player(props: {room: string}){
         }
     }, []);
 
+    useEffect(() => {
+        const seekRepeat = setInterval(async() => {
+            if(!playerMeta.pause){
+                const start = Date.now() - playerMeta.startUnix
+                const playerStart = Math.floor((await player.getCurrentTime()) * 1000)
+                const result = Math.abs(start - playerStart)
+                if(result > 1000)
+                    seekTo(player, start)
+            }
+        }, 500)
+        return () => {
+            clearInterval(seekRepeat)
+        }
+    }, [playerMeta])
+
     return (
         <div className={classes.container}>
             <div className={classes.playerWrapper}>
                 <div id="youtube-player" className={classes.reactPlayer}/>
             </div>
-            {player ? <PlayerControls pause={playerMeta.pause} room={props.room} player={player} end={playerMeta.end}/> : null}
+            {player ? <PlayerControls startUnix={playerMeta.startUnix} pause={playerMeta.pause} room={props.room} player={player} end={playerMeta.end}/> : null}
         </div>
     )
 }

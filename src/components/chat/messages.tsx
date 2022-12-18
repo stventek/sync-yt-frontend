@@ -32,7 +32,6 @@ const Messages = React.memo((props : {room: string, scrollId: string}) => {
 
     useEffect(() => {
         socket.on('message-recive', (message: message) => {
-            console.log('recived');
             if(messages.length > 49){
                 const newMessages = [...messages];
                 newMessages.push(message)
