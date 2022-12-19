@@ -28,7 +28,7 @@ export default function Admin(){
             email: state.email,
             password: state.password
         }
-        axios.post('http://localhost:5000/user/signin', data).then(e => {
+        axios.post(`${process.env.REACT_APP_API}/user/signin`, data).then(e => {
             localStorage.setItem('accessToken', e.data.accessToken)
             localStorage.setItem('exp', e.data.exp)
             history.push('/admin/dashboard')

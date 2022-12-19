@@ -90,7 +90,7 @@ export default function Dashboard(){
             toDate: state.toDate,
             groupBy: state.groupBy
         }
-        axios.get<resType>('http://localhost:5000/admin/dashboard', {params})
+        axios.get<resType>(`${process.env.REACT_APP_API}/admin/dashboard`, {params})
             .then((e) => {
                 e.data.graph.labels = e.data.graph.labels.map(e => getTimeString(e))
                 e.data.graph.datasets[0].borderColor = 'rgb(255, 99, 132)'

@@ -9,12 +9,16 @@ import { Link } from 'react-router-dom';
 import UserConfigDialog from '../user-config/UserConfigDialog';
 import ChangeVideoInput from './ChangeVideoInput';
 import Button from '@material-ui/core/Button';
+import { useHistory } from 'react-router-dom'
+import socket from '../../utilities/socket';
 
 type propWithChangeVideoInput = {withChangeVideoInput: true, room: string, useConfigDialog?: boolean, logOut?: boolean}
 type prop = {withChangeVideoInput: false, useConfigDialog?: boolean, logOut?: boolean}
 
 export default function NavBar(props : prop | propWithChangeVideoInput) {
-  const classes = useStyles();
+  const classes = useStyles()
+
+  const history = useHistory()
 
   const [state, setState] = useState({configDialog: false} );
 
@@ -27,9 +31,22 @@ export default function NavBar(props : prop | propWithChangeVideoInput) {
   }
 
   const handleDialogConfigSave = () => {
+    if(props.useConfigDialog && props.withChangeVideoInput){
+      const username = localStorage.getItem('username')
+      const color = localStorage.getItem('color')
+      const req = {username, color, room: props.room}
+      socket.emit('userUpdate', req, (code: number, res: any) => {
+        
+      })
+    }
     setState({...state, configDialog: false})
   }
 
+  const handleLogOut = () => {
+    localStorage.setItem('accessToken', '')
+    localStorage.setItem('exp', '')
+    history.push('/admin/signin')
+  }
 
   return (
     <div>
@@ -50,7 +67,7 @@ export default function NavBar(props : prop | propWithChangeVideoInput) {
             onClick={handleDialogConfigOpen}>
             <SettingsIcon/>
           </IconButton>: undefined}
-          {props.logOut ? <Button color="inherit" style={{marginLeft: "auto"}}>Log Out</Button> : undefined}
+          {props.logOut ? <Button color="inherit" onClick={handleLogOut} style={{marginLeft: "auto"}}>Log Out</Button> : undefined}
         </Toolbar>
       </AppBar>
     </div>

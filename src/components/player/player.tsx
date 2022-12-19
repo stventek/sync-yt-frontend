@@ -52,18 +52,18 @@ export default function Player(props: {room: string}){
                 getDuration(player, playerInfo.pause).then(end => {
                     setPlayerMeta(state => ({...state, start: playerInfo.timeElapsed, end, pause: playerInfo.pause, startUnix: Date.now() - playerInfo.timeElapsed}));
                 })
-                return player;
+                return player
             })
         });
 
         socket.on('pause-recive', () => {
-            player.pauseVideo();
-            setPlayerMeta(state => ({...state, pause: true}));
+            player.pauseVideo()
+            setPlayerMeta(state => ({...state, pause: true}))
         });
 
         socket.on('resume-recive', (timeElapsed) => {
             setPlayer((player: any) => {
-                player.playVideo();
+                player.playVideo()
                 //seekTo(player, timeElapsed);
                 setPlayerMeta(state => ({...state, start: timeElapsed, pause: false, startUnix: Date.now() - timeElapsed}));
                 return player;
@@ -95,6 +95,10 @@ export default function Player(props: {room: string}){
                 const result = Math.abs(start - playerStart)
                 if(result > 1000)
                     seekTo(player, start)
+            }
+            else{
+                if(player)
+                    player.pauseVideo()
             }
         }, 500)
         return () => {
